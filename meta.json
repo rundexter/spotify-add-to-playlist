@@ -4,23 +4,29 @@
 {
     //Required. Inputs the module expects.
     "inputs": [
-        //e.g.
-        /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "user_id",
+            "title":"The user's Spotify user ID"
+        },
+        {
+            "id": "playlist_id",
+            "title":"The Spotify ID for the playlist"
+        },
+        {
+            "id": "position",
+            "title":"position"
+        },
+        {
+            "id": "uris",
+            "title":"array of Spotify URI"
         }
-        */
     ],
     //Required. Outputs the module emits.
     "outputs": [
-      //e.g.
-      /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "snapshot_id",
+            "title":"snapshot_id"
         }
-      */
     ],
     "title": "Spotify Add Tracks to Playlist" /* Required.A display name for the module */
 }

@@ -63,7 +63,10 @@ module.exports = _.merge({
              */
             input: {
                 //Replace VAR1 with the name of an expected input, and add more inputs as needed.
-                VAR1: 'foo'
+                user_id: 'al.zaretskii',
+                playlist_id: '7jqGSLdBW6OwKjUBKX3T8e',
+                position: 0,
+                uris: ['spotify:track:4iV5W9uYEdYUVa79Axb7Rh', 'spotify:track:1301WleyT98MSxVHPZCA6M']
             }
         }
     }
