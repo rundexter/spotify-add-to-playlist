@@ -28,5 +28,6 @@
             "title":"snapshot_id"
         }
     ],
+    "icon": "spotify",
     "title": "Spotify Add Tracks to Playlist" /* Required.A display name for the module */
 }
