@@ -1,81 +1,19 @@
-var _ = require('lodash');
-var SpotifyWebApi = require('spotify-web-api-node');
+var _ = require('lodash'),
+    util = require('./util.js'),
+    SpotifyWebApi = require('spotify-web-api-node');
 
-var globalPickResult = {
-    'body.snapshot_id': "snapshot_id"
-};
+var pickInputs = {
+        'user_id': { key: 'user_id', validate: { req: true } },
+        'playlist_id': { key: 'playlist_id', validate: { req: true } },
+        'uris': { key: 'uris', type: 'array' },
+        'position': { key: 'position', type: 'integer' },
+
+    },
+    pickOutputs = {
+        'snapshot_id': 'body.snapshot_id'
+    };
 
 module.exports = {
-    /**
-     * Return pick result.
-     *
-     * @param output
-     * @param pickResult
-     * @returns {*}
-     */
-    pickResult: function (output, pickResult) {
-        var result = {};
-
-        _.map(_.keys(pickResult), function (resultVal) {
-
-            if (_.has(output, resultVal)) {
-
-                if (_.isObject(pickResult[resultVal])) {
-                    if (_.isArray(_.get(output, resultVal))) {
-
-                        if (!_.isArray(result[pickResult[resultVal].key])) {
-                            result[pickResult[resultVal].key] = [];
-                        }
-
-                        _.map(_.get(output, resultVal), function (inOutArrayValue) {
-
-                            result[pickResult[resultVal].key].push(this.pickResult(inOutArrayValue, pickResult[resultVal].fields));
-                        }, this);
-                    } else if (_.isObject(_.get(output, resultVal))){
-
-                        result[pickResult[resultVal].key] = this.pickResult(_.get(output, resultVal), pickResult[resultVal].fields);
-                    }
-                } else {
-                    _.set(result, pickResult[resultVal], _.get(output, resultVal));
-                }
-            }
-        }, this);
-
-        return result;
-    },
-
-    /**
-     * Set acess token.
-     *
-     * @param dexter
-     * @param spotifyApi
-     */
-    authParams: function (dexter, spotifyApi) {
-
-        if (dexter.environment('spotify_access_token')) {
-
-            spotifyApi.setAccessToken(dexter.environment('spotify_access_token'));
-        }
-    },
-
-    /**
-     * Set failure response.
-     *
-     * @param err
-     * @param dexter
-     */
-    failureProcess: function (err, dexter) {
-
-        var result = _.isArray(err)? err : [err];
-
-        if (!dexter.environment('spotify_access_token')) {
-            var envError = 'This module need optional environment variable [spotify_access_token];';
-
-            result.unshift(envError);
-        }
-
-        return result;
-    },
 
     /**
      * The main entry point for the Dexter module.
@@ -85,17 +23,22 @@ module.exports = {
      */
     run: function(step, dexter) {
 
-        var spotifyApi = new SpotifyWebApi();
+        var spotifyApi = new SpotifyWebApi(),
+            token = dexter.provider('spotify').credentials('access_token'),
+            inputs = util.pickInputs(step, pickInputs),
+            validateErrors = util.checkValidateErrors(inputs, pickInputs);
 
-        this.authParams(dexter, spotifyApi);
+        if (validateErrors)
+            return this.fail(validateErrors);
 
-        spotifyApi.addTracksToPlaylist(step.input('user_id').first(), step.input('playlist_id').first(), _.get(step.inputs(), 'uris'), _.pick(step.inputs(), 'position'))
+        spotifyApi.setAccessToken(token);
+        spotifyApi.addTracksToPlaylist(inputs.user_id, inputs.playlist_id, inputs.uris, _.pick(inputs, 'position'))
             .then(function(data) {
 
-                this.complete(this.pickResult(data, globalPickResult));
+                this.complete(util.pickOutputs(data, pickOutputs));
             }.bind(this), function(err) {
 
-                this.fail(this.failureProcess(err, dexter));
+                this.fail(err);
             }.bind(this));
     }
 };

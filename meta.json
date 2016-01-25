@@ -28,6 +28,13 @@
             "title":"snapshot_id"
         }
     ],
+    "providers": [{
+        "name": "spotify",
+        "scopes": [
+            "playlist-modify-public",
+            "playlist-modify-private"
+        ]
+    }],
     "icon": "spotify",
     "title": "Spotify Add Tracks to Playlist" /* Required.A display name for the module */
 }
