@@ -1,13 +1,17 @@
 {
-  "name": "spotify-add-tracks-to-playlist",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "author": "Alexander",
-  "license": "ISC",
-  "private": true,
-  "dependencies": {
-    "lodash": "^3.10.1",
-    "spotify-web-api-node": "^2.2.0"
-  }
+   "name": "spotify-add-tracks-to-playlist",
+   "version": "0.0.1",
+   "description": "Add one or more tracks to a user’s playlist",
+   "main": "index.js",
+   "author": "Run Dexter, Inc",
+   "license": "MIT",
+   "private": true,
+   "dependencies": {
+      "lodash": "^3.10.1",
+      "spotify-web-api-node": "^2.2.0"
+   },
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/rundexter/spotify-add-to-playlist"
+   }
 }
